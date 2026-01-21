@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Dataset files (too large for GitHub)
+train.csv
+test.csv
+*.zip
+sample_submission.csv
+data_description.txt
+
+# OS files
+.DS_Store
+Thumbs.db

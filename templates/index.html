@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction System</title>
+    <meta name="description" content="Predict house prices using machine learning - A project by Wesley Iluobe (23CH034193)">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🏠</span>
+                    <h1>House Price Predictor</h1>
+                </div>
+                <p class="subtitle">AI-Powered Real Estate Valuation</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="card prediction-card">
+                <div class="card-header">
+                    <h2>Enter House Features</h2>
+                    <p>Fill in the details below to get an instant price prediction</p>
+                </div>
+
+                <form id="prediction-form" class="prediction-form">
+                    <div class="form-grid">
+                        <!-- Overall Quality -->
+                        <div class="form-group">
+                            <label for="overall_qual">
+                                <span class="label-icon">⭐</span>
+                                Overall Quality
+                            </label>
+                            <select id="overall_qual" name="overall_qual" required>
+                                <option value="1">1 - Very Poor</option>
+                                <option value="2">2 - Poor</option>
+                                <option value="3">3 - Fair</option>
+                                <option value="4">4 - Below Average</option>
+                                <option value="5">5 - Average</option>
+                                <option value="6">6 - Above Average</option>
+                                <option value="7" selected>7 - Good</option>
+                                <option value="8">8 - Very Good</option>
+                                <option value="9">9 - Excellent</option>
+                                <option value="10">10 - Very Excellent</option>
+                            </select>
+                            <span class="helper-text">Rate material and finish quality</span>
+                        </div>
+
+                        <!-- Living Area -->
+                        <div class="form-group">
+                            <label for="gr_liv_area">
+                                <span class="label-icon">📐</span>
+                                Living Area (sq ft)
+                            </label>
+                            <input type="number" id="gr_liv_area" name="gr_liv_area" 
+                                   value="1500" min="300" max="6000" step="10" required>
+                            <span class="helper-text">Above grade living area</span>
+                        </div>
+
+                        <!-- Basement Area -->
+                        <div class="form-group">
+                            <label for="total_bsmt_sf">
+                                <span class="label-icon">🏗️</span>
+                                Basement Area (sq ft)
+                            </label>
+                            <input type="number" id="total_bsmt_sf" name="total_bsmt_sf" 
+                                   value="1000" min="0" max="5000" step="10" required>
+                            <span class="helper-text">Total basement square footage</span>
+                        </div>
+
+                        <!-- Garage Cars -->
+                        <div class="form-group">
+                            <label for="garage_cars">
+                                <span class="label-icon">🚗</span>
+                                Garage Capacity
+                            </label>
+                            <select id="garage_cars" name="garage_cars" required>
+                                <option value="0">0 Cars</option>
+                                <option value="1">1 Car</option>
+                                <option value="2" selected>2 Cars</option>
+                                <option value="3">3 Cars</option>
+                                <option value="4">4 Cars</option>
+                            </select>
+                            <span class="helper-text">Number of cars garage can hold</span>
+                        </div>
+
+                        <!-- Full Bathrooms -->
+                        <div class="form-group">
+                            <label for="full_bath">
+                                <span class="label-icon">🚿</span>
+                                Full Bathrooms
+                            </label>
+                            <select id="full_bath" name="full_bath" required>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2" selected>2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                            <span class="helper-text">Number of full bathrooms</span>
+                        </div>
+
+                        <!-- Year Built -->
+                        <div class="form-group">
+                            <label for="year_built">
+                                <span class="label-icon">📅</span>
+                                Year Built
+                            </label>
+                            <input type="number" id="year_built" name="year_built" 
+                                   value="2000" min="1872" max="2026" required>
+                            <span class="helper-text">Original construction year</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-predict" id="predict-btn">
+                        <span class="btn-text">Predict Price</span>
+                        <span class="btn-icon">→</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Result Card -->
+            <div class="card result-card" id="result-card" style="display: none;">
+                <div class="result-header">
+                    <span class="result-icon">💰</span>
+                    <h3>Predicted House Price</h3>
+                </div>
+                <div class="result-price" id="result-price">$0.00</div>
+                <div class="result-details" id="result-details"></div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Analyzing features...</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="student-info">
+                    <strong>Wesley Iluobe</strong> | Matric: 23CH034193
+                </p>
+                <p class="tech-info">
+                    Random Forest Regressor | Model Persistence: Joblib
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loading = document.getElementById('loading');
+            const resultCard = document.getElementById('result-card');
+            const predictBtn = document.getElementById('predict-btn');
+            
+            // Show loading
+            loading.style.display = 'flex';
+            predictBtn.disabled = true;
+            resultCard.style.display = 'none';
+            
+            // Get form data
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Display result
+                    document.getElementById('result-price').textContent = data.prediction;
+                    
+                    // Build details HTML
+                    let detailsHtml = '<div class="features-summary">';
+                    for (const [key, value] of Object.entries(data.features)) {
+                        detailsHtml += `<div class="feature-item"><span class="feature-name">${key}:</span> <span class="feature-value">${value}</span></div>`;
+                    }
+                    detailsHtml += '</div>';
+                    document.getElementById('result-details').innerHTML = detailsHtml;
+                    
+                    // Show result card with animation
+                    resultCard.style.display = 'block';
+                    resultCard.classList.add('animate-in');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+                console.error(error);
+            } finally {
+                loading.style.display = 'none';
+                predictBtn.disabled = false;
+            }
+        });
+
+        // Add input validation visual feedback
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value < this.min || this.value > this.max) {
+                    this.classList.add('invalid');
+                } else {
+                    this.classList.remove('invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
