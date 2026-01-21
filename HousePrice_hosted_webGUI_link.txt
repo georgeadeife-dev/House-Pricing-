@@ -22,23 +22,7 @@ Features Used (6 of 9 allowed):
 
 Deployment:
 -----------
-Live URL: [TO BE FILLED AFTER DEPLOYMENT]
-GitHub Repository: [TO BE FILLED AFTER UPLOAD]
-
-Instructions to Run Locally:
-----------------------------
-1. Install dependencies: pip install -r requirements.txt
-2. Train the model: python model/model_building.py
-3. Start the server: python app.py
-4. Open browser: http://localhost:5000
-
-Deployment to Render.com:
--------------------------
-1. Push code to GitHub repository
-2. Go to render.com and create new Web Service
-3. Connect to your GitHub repository
-4. Set build command: pip install -r requirements.txt
-5. Set start command: gunicorn app:app
-6. Deploy!
+Live URL: https://house-price-prediction-system-y5fl.onrender.com/
+GitHub Repository: https://github.com/kingW930/House-price-prediction-system
 
 ======================================
