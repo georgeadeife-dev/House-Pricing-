@@ -4,8 +4,8 @@ HOUSE PRICE PREDICTION SYSTEM
 
 Student Information:
 --------------------
-Name: Wesley Iluobe
-Matric Number: 23CH034193
+Name: Adeife Emmanuel
+Matric Number: 23CH034187
 
 Technical Details:
 ------------------
@@ -23,6 +23,5 @@ Features Used (6 of 9 allowed):
 Deployment:
 -----------
 Live URL: https://house-price-prediction-system-y5fl.onrender.com/
-GitHub Repository: https://github.com/kingW930/House-price-prediction-system
-
+GitHub Repository: 
 ======================================
